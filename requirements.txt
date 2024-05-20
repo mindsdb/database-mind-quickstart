@@ -1,0 +1,4 @@
+load_dotenv==0.1.0
+Flask==3.0.3
+mindsdb-sdk==2.2.1
+openai==1.30.1
