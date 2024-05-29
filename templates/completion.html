@@ -40,7 +40,10 @@
     </main>
     <div class="input_area_holder">
       <div class="holder">
-        <div class="input_area full-width" id="input_area">
+        <select id="model_select">
+          <option value="">loading...</option>
+        </select>
+        <div class="input_area" id="input_area">
           <div
             class="expandable-textarea"
             id="query"
@@ -52,7 +55,7 @@
           <button
             class="send_button"
             id="send_button"
-            onclick="sendQuery()"
+            onclick="sendQuery('completion')"
             aria-label="Send Message"
           >
             <img src="/static/img/send_icon.svg" alt="send" />
@@ -62,7 +65,6 @@
       <div class="request_stats" id="request_stats"> <img src="/static/img/info_icon.svg" alt="information icon">Prompt: <span id="prompt_tokens"></span> | Completion: <span id="completion_tokens">40</span> | Total: <span id="total_tokens">40</span></div>
     </div>
     <div></div>
-    <script src="/static/js/messages.js"></script>
     <script src="/static/js/script2.js"></script>
   </body>
 </html>
