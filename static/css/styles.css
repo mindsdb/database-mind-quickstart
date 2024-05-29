@@ -6,7 +6,7 @@
   --color-white: #fff;
   --color-gray-light: #f4f4f5;
   --color-gray-dark: #e4e4e7;
-  --color-gray-medium: #52525B;
+  --color-gray-medium: #52525b;
   --color-gray-text: #71717a;
   --color-gray-border: #a1a1aa;
   --color-green: #00a587;
@@ -15,6 +15,7 @@
   --color-green-lighter: #e5f7f4;
   --color-error: #fee;
   --color-error-text: #991b16;
+  --color-button: #dc2626;
 }
 
 html {
@@ -54,20 +55,22 @@ p {
   font-size: 16px;
   line-height: 28px; /* 175% */
 }
-.reset_btn{
+.reset_btn {
   display: flex;
-    height: 32px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 6px;
-    background: var(--color-green);
-    color: var(--color-white);
-    cursor: pointer;
-    border: 0;
-    outline: none;
+  gap: 10px;
+  height: 32px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  padding: 0px 10px;
+  background: var(--color-error);
+  color: var(--color-button);
+  cursor: pointer;
+  border: solid 1px var(--color-button);
+  outline: none;
 }
 .reset_btn:hover {
-  box-shadow: 0px 0px 7px 4px rgba(0,0,0,0.05) inset;
+  box-shadow: 0px 0px 7px 4px rgba(250, 250, 250, 0.5) inset;
 }
 .github {
   display: flex;
@@ -237,7 +240,7 @@ pre code {
   border: 1px solid var(--color-gray-dark);
   background-color: var(--color-white);
 }
-.input_area.full-width{
+.input_area.full-width {
   width: 712px;
 }
 .input_area_holder select {
@@ -248,6 +251,11 @@ pre code {
   border: 1px solid var(--color-gray-dark);
   font-family: var(--font-main);
   font-size: 14px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAMAAACtdX32AAAAdVBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhMdQaAAAAJ3RSTlMAAAECAwQGBwsOFBwkJTg5RUZ4eYCHkJefpaytrsXGy8zW3+Do8vNn0bsyAAAAYElEQVR42tXROwJDQAAA0Ymw1p9kiT+L5P5HVEi3qJn2lcPjtIuzUIJ/rhIGy762N3XaThqMN1ZPALsZPEzG1x8LrFL77DHBnEMxBewz0fJ6LyFHTPL7xhwzWYrJ9z22AqmQBV757MHfAAAAAElFTkSuQmCC);
+  background-position: 100%;
+  background-repeat: no-repeat;
 }
 .input_area_holder select:focus-visible {
   outline: none;

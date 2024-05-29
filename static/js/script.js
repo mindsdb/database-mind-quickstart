@@ -3,13 +3,16 @@ let history = [];
 if(IS_LLM){
   history = localStorage.getItem('history');
   try{
-  history = JSON.parse(history)
+    history = JSON.parse(history)
+    if(!history){
+      history = []
+    }
   }catch(err){
+    console.log(err)
     history = [];
   }
   renderStoredConversation(history);
 }
-
 // Removes all elements with the specified class name from the DOM.
 function removeElementsByClass(className) {
   let elements = document.getElementsByClassName(className);
@@ -136,8 +139,10 @@ function resetInput() {
 }
 
 function renderStoredConversation(history){
-  for (let i = 0; i < history.length; i++) {
-    renderLastMessages([history[i]])
+  if(history && history.length>0){
+    for (let i = 0; i < history.length; i++) {
+      renderLastMessages([history[i]])
+    }
   }
 }
 
@@ -358,13 +363,16 @@ function getModels() {
 }
 
 function resetConversation(){
-  history = [];
-  localStorage.setItem('history',JSON.stringify(history));
-  const div = document.createElement("div");
-  div.className = "new_session";
-  div.innerHTML = `<div class="line"></div>New session started<div class="line"></div>`;
-  document.getElementById("chat_container").innerHTML = '';
-  document.getElementById("chat_container").appendChild(div);
+  let text = "Are you sure you want to restart the conversation? All messages and context will be lost.";
+  if (confirm(text) == true) {
+    history = [];
+    localStorage.setItem('history',JSON.stringify(history));
+    const div = document.createElement("div");
+    div.className = "new_session";
+    div.innerHTML = `<div class="line"></div>New session started<div class="line"></div>`;
+    document.getElementById("chat_container").innerHTML = '';
+    document.getElementById("chat_container").appendChild(div);
+  } 
 }
 
 /**
