@@ -67,9 +67,9 @@ def index():
     return render_template('index.html')  # Render the index.html template
 
 # Define the route for the completions
-@app.route('/completion')
-def completion():
-    return render_template('completion.html')  # Render the index.html template
+@app.route('/llm')
+def llm():
+    return render_template('llm.html')  # Render the index.html template
 
 # Define the route for sending a message
 @app.route('/send', methods=['POST'])
@@ -91,18 +91,29 @@ def send():
         )
         print("Got response:")
         print(response)
-        
-        # Append the assistant's response to the res list
-        res.append({
-            "role": "assistant", 
-            "content": response.choices[0].message.content, 
-            "model": response.model,
-            "usage": {
-                "completion_tokens": response.usage.completion_tokens, 
-                "prompt_tokens": response.usage.prompt_tokens, 
-                "total_tokens": response.usage.total_tokens
-            }
-        })
+        if not response.choices[0].message.content:
+            res.append({
+                "role": "error", 
+                "content": "Something went wrong please try again later.", 
+                "model": response.model,
+                "usage": {
+                    "completion_tokens": response.usage.completion_tokens, 
+                    "prompt_tokens": response.usage.prompt_tokens, 
+                    "total_tokens": response.usage.total_tokens
+                }
+            })
+        else:
+            # Append the assistant's response to the res list
+            res.append({
+                "role": "assistant", 
+                "content": response.choices[0].message.content, 
+                "model": response.model,
+                "usage": {
+                    "completion_tokens": response.usage.completion_tokens, 
+                    "prompt_tokens": response.usage.prompt_tokens, 
+                    "total_tokens": response.usage.total_tokens
+                }
+            })
     except Exception as e:
         # Handle different types of errors and append error messages to the res list
         print(e)
@@ -118,19 +129,23 @@ def send():
     # Return the updated res list
     return res  
 
-@app.route('/send_completion', methods=['POST'])
-def send_completion():
+@app.route('/send_llm', methods=['POST'])
+def send_llm():
     message = request.form['message']  # Get the message from the form
+    history = request.form.get('history') or False  # Get the history from the form
     model = request.form.get('model') or "gpt-3.5-turbo"  # Default to "gpt-3.5-turbo" if no model is provided
     print("Completing request using model: "+model)
     res = [] 
     try:
         # Create the message object
-        new_message = {"role": "user", "content": message}
+        new_message = [{"role": "user", "content": message}]
+        if history:
+            new_message = json.loads(history)
+        print(new_message)
         # Send the message to the API and get the response
         response = client.chat.completions.create(
             model=model,   # This model is limited by what our inference endpoints support (only gpt-3.5-turbo for now).
-            messages=[new_message],
+            messages=new_message,
             stream=False
         )
         print("Got response:")

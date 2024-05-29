@@ -1,4 +1,4 @@
-const IS_COMPLETION = window.location.href.includes('/completion');
+const IS_LLM = window.location.href.includes('/llm');
 
 // Removes all elements with the specified class name from the DOM.
 function removeElementsByClass(className) {
@@ -174,7 +174,7 @@ function setupEventListeners() {
   }, 100);
 
   // Get available models if on the completion page.
-  if (IS_COMPLETION) {
+  if (IS_LLM) {
     getModels();
   }
 }
@@ -265,7 +265,7 @@ function simulateLoadingPhase() {
     scroll();
   }, 800);
   // Only display loading messages if not on the completion page.
-  if (!IS_COMPLETION) {
+  if (!IS_LLM) {
     let randomTime = Math.floor(Math.random() * 5) + 8;
     console.log(randomTime)
     loadingTimeout = setInterval(() => {
@@ -286,10 +286,10 @@ function postMessageToServer(message, model) {
   formData.append("message", message);
   let endpoint = '/send';
 
-  if (IS_COMPLETION) {
+  if (IS_LLM) {
     let model = document.getElementById("model_select").value;
     formData.append("model", model);
-    endpoint = '/send_completion';
+    endpoint = '/send_llm';
   }
 
   fetch(endpoint, { method: "POST", body: formData })
