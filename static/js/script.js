@@ -1,5 +1,5 @@
 const IS_LLM = window.location.href.includes('/llm');
-let history;
+let history = [];
 if(IS_LLM){
   history = localStorage.getItem('history');
   try{
@@ -359,6 +359,7 @@ function getModels() {
 
 function resetConversation(){
   history = [];
+  localStorage.setItem('history',JSON.stringify(history));
   const div = document.createElement("div");
   div.className = "new_session";
   div.innerHTML = `<div class="line"></div>New session started<div class="line"></div>`;
