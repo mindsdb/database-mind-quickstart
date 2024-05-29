@@ -139,7 +139,7 @@ def send_llm():
     try:
         # Create the message object
         new_message = [{"role": "user", "content": message}]
-        if history:
+        if history and model != 'dbrx' and model != 'firefunction-v1' and model != 'firellava-13b' and model != 'hermes-2-pro':
             new_message = json.loads(history)
         print(new_message)
         # Send the message to the API and get the response
