@@ -186,6 +186,11 @@ function setupEventListeners() {
     document.execCommand("insertHTML", false, text);
   });
 
+  // Handle change model
+  document.getElementById("model_select").addEventListener("change", (e) => {
+    document.getElementById("query").focus();
+  });
+
   // Focus on the input field after a short delay.
   setTimeout(function () {
     document.getElementById("query").focus();
