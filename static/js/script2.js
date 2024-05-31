@@ -1,18 +1,5 @@
 const IS_LLM = window.location.href.includes('/llm');
-let history = [];
-if(IS_LLM){
-  history = localStorage.getItem('history');
-  try{
-    history = JSON.parse(history)
-    if(!history){
-      history = []
-    }
-  }catch(err){
-    console.log(err)
-    history = [];
-  }
-  renderStoredConversation(history);
-}
+
 // Removes all elements with the specified class name from the DOM.
 function removeElementsByClass(className) {
   let elements = document.getElementsByClassName(className);
@@ -27,7 +14,7 @@ function removeElementsByClass(className) {
  * @param {string} role - The role of the sender (e.g., "user", "assistant", "error", "loading").
  * @returns {HTMLDivElement} The created message div element.
  */
-function createMessageDiv(message, role, data) {
+function createMessageDiv(message, role) {
   // Create the main message div element.
   const messageDiv = document.createElement("div");
   messageDiv.className = "message";
@@ -62,16 +49,6 @@ function createMessageDiv(message, role, data) {
     addLoadingIndicator(p);
     messageDiv.classList.add("temp"); // Add a temporary class for easy removal.
   }
-  if(role ==='assistant' && data['usage']){
-    const container = document.createElement("div");
-    container.appendChild(messageDiv);
-    const infoDiv = document.createElement("div");
-    infoDiv.className = "request_stats";
-    let html = `Model: <span id="model">${data['model']}</span> | Prompt: <span id="prompt_tokens">${data['usage']['prompt_tokens']}</span> | Completion: <span id="completion_tokens">${data['usage']['completion_tokens']}</span> | Total: <span id="total_tokens">${data['usage']['total_tokens']}</span>`;
-    infoDiv.innerHTML = html;
-    container.appendChild(infoDiv);
-    return container
-  }
 
   return messageDiv;
 }
@@ -88,8 +65,7 @@ function scroll() {
 
 // Initialize timeout variables.
 let timeout;
-let loadingTimeout1;
-let loadingTimeout2;
+let loadingTimeout;
 
 /**
  * Sends the user's query to the server.
@@ -126,6 +102,8 @@ function loading(message) {
   // Simulate the loading phase with a delay and loading messages.
   simulateLoadingPhase();
 
+  document.getElementById("request_stats").style.visibility = "hidden";
+
 }
 
 /**
@@ -133,17 +111,9 @@ function loading(message) {
  */
 function resetInput() {
   clearTimeout(timeout);
-  clearTimeout(loadingTimeout1);
-  clearTimeout(loadingTimeout2);
+  clearTimeout(loadingTimeout);
+  last_list = 'execution';
   enableSendButton();
-}
-
-function renderStoredConversation(history){
-  if(history && history.length>0){
-    for (let i = 0; i < history.length; i++) {
-      renderLastMessages([history[i]])
-    }
-  }
 }
 
 /**
@@ -152,9 +122,21 @@ function renderStoredConversation(history){
  */
 function renderLastMessages(data) {
   const message = data[data.length - 1];
-  const messageDiv = createMessageDiv(message.content, message.role, message);
+  const messageDiv = createMessageDiv(message.content, message.role);
   document.getElementById("chat_container").appendChild(messageDiv);
   scroll();
+}
+
+/**
+ * Renders completion information like token usage from the server response.
+ * @param {Array} data - The server response data containing message objects.
+ */
+function renderCompletionInfo(data) {
+  const message = data[data.length - 1];
+  document.getElementById("prompt_tokens").innerHTML = `${message['usage']['prompt_tokens']} tokens`;
+  document.getElementById("completion_tokens").innerHTML = `${message['usage']['completion_tokens']} tokens`;
+  document.getElementById("total_tokens").innerHTML = `${message['usage']['total_tokens']} tokens`;
+  document.getElementById("request_stats").style.visibility = "visible";
 }
 
 /**
@@ -184,11 +166,6 @@ function setupEventListeners() {
     e.preventDefault();
     let text = e.clipboardData.getData("text/plain");
     document.execCommand("insertHTML", false, text);
-  });
-
-  // Handle change model
-  document.getElementById("model_select").addEventListener("change", (e) => {
-    document.getElementById("query").focus();
   });
 
   // Focus on the input field after a short delay.
@@ -289,15 +266,10 @@ function simulateLoadingPhase() {
   }, 800);
   // Only display loading messages if not on the completion page.
   if (!IS_LLM) {
-    let randomTime = Math.floor(Math.random() * (13 - 5 + 1)) + 5; 
-    loadingTimeout1 = setTimeout(() => {
-      const message = getRandomLoadingMessage(queriesMessages);
-      createLogMessage(message);
-      scroll();
-    }, randomTime * 1000);
-    randomTime = randomTime + Math.floor(Math.random() * (13 - 5 + 1)) + 5; 
-    loadingTimeout2 = setTimeout(() => {
-      const message = getRandomLoadingMessage(executionMessages);
+    let randomTime = Math.floor(Math.random() * 5) + 8;
+    console.log(randomTime)
+    loadingTimeout = setInterval(() => {
+      const message = getRandomLoadingMessage();
       createLogMessage(message);
       scroll();
     }, randomTime * 1000);
@@ -307,8 +279,9 @@ function simulateLoadingPhase() {
 /**
  * Sends the user's message to the server.
  * @param {string} message - The user's message.
+ * @param {string} [model] - The selected model (for completion requests).
  */
-function postMessageToServer(message) {
+function postMessageToServer(message, model) {
   const formData = new FormData();
   formData.append("message", message);
   let endpoint = '/send';
@@ -317,21 +290,15 @@ function postMessageToServer(message) {
     let model = document.getElementById("model_select").value;
     formData.append("model", model);
     endpoint = '/send_llm';
-    history.push({"role": "user", "content": message});
-    localStorage.setItem('history',JSON.stringify(history));
-    formData.append("history", JSON.stringify(history));
   }
 
   fetch(endpoint, { method: "POST", body: formData })
     .then((response) => response.json())
     .then((data) => {
-      if(data[0] && 'role' in data[0] && data[0]['role']!='error'){
-        history.push({"role": "assistant", "content": data[0]['content'], "model": data[0]['model'], "usage": data[0]['usage']});
-        localStorage.setItem('history',JSON.stringify(history));
-      }
       resetInput();
       removeElementsByClass("temp");
       renderLastMessages(data);
+      renderCompletionInfo(data);
       console.log('========')
       console.log("Content: ", data[0]['content']);
       console.log("Model: ", data[0]['model']);
@@ -367,26 +334,23 @@ function getModels() {
     });
 }
 
-function resetConversation(){
-  let text = "Are you sure you want to restart the conversation? All messages and context will be lost.";
-  if (confirm(text) == true) {
-    history = [];
-    localStorage.setItem('history',JSON.stringify(history));
-    const div = document.createElement("div");
-    div.className = "new_session";
-    div.innerHTML = `<div class="line"></div>New session started<div class="line"></div>`;
-    document.getElementById("chat_container").innerHTML = '';
-    document.getElementById("chat_container").appendChild(div);
-  } 
-}
+let last_list = 'execution';
 
 /**
  * Returns a random loading message.
  * @returns {string} A random loading message.
  */
-function getRandomLoadingMessage(array) {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
+function getRandomLoadingMessage() {
+    if(last_list == 'execution'){
+        const randomIndex = Math.floor(Math.random() * queriesMessages.length);
+        last_list = 'queries'
+        return queriesMessages[randomIndex];
+    }else{
+        const randomIndex = Math.floor(Math.random() * executionMessages.length);
+        last_list = 'execution'
+        return executionMessages[randomIndex];
+    }
+
 }
 
 // Initialize the application.

@@ -23,13 +23,11 @@
         <span class="text-base not-italic font-normal leading-7">Chatbot</span>
       </div>
       <div
-        class="github"
-        aria-label="Visit GitHub"
-        onclick="window.open('https://github.com/mindsdb/mindsdb', '_blank')"
-      >
-        <img src="../static/img/github.png" alt="Github Logo" />
-        <span class="text-sm">Github</span>
-      </div>
+      class="reset_btn" onclick="resetConversation()"
+    >
+      <img src="../static/img/trash_icon.svg" alt="Trash can Logo" />
+      <span class="text-sm">Clear Conversation</span>
+    </div>
     </header>
     <main class="chat_container" id="chat_container">
       <div class="new_session">
@@ -40,7 +38,10 @@
     </main>
     <div class="input_area_holder">
       <div class="holder">
-        <div class="input_area full-width" id="input_area">
+        <select id="model_select">
+          <option value="">loading...</option>
+        </select>
+        <div class="input_area" id="input_area">
           <div
             class="expandable-textarea"
             id="query"
@@ -61,7 +62,6 @@
       </div>
     </div>
     <div></div>
-    <script src="/static/js/messages.js"></script>
     <script src="/static/js/script.js"></script>
   </body>
 </html>

@@ -10,7 +10,7 @@ Clone this repository to your local machine using:
 
 Create a virtual environment, execute the following command: 
 
-``` python -m venv .venv ``` 
+``` python3 -m venv .venv ``` 
 
 Activate the virtual environment by running: 
 
@@ -30,4 +30,4 @@ Create and .env file and add your MindsDB API KEY:
 
 ## Running:
 To run the project, execute the following command: 
-``` python app.py ```
+``` python3 app.py ```
