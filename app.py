@@ -17,8 +17,7 @@ load_dotenv()
 mindsdb_api_key = os.getenv('MINDSDB_API_KEY')
 
 #define base url
-base_url = "https://ai.dev.mindsdb.com"
-#base_url="https://llm.mdb.ai"
+base_url = os.getenv('MINDSDB_API_URL', "https://llm.mdb.ai")
 
 #Get database connections details from environment variables
 database_user = os.getenv('DATABASE_USER')
@@ -199,3 +198,4 @@ def models():
 if __name__ == '__main__':
     print("App Running on 127.0.0.0:8000")
     app.run(port=8000, debug=False)
+
