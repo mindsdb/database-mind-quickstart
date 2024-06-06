@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for
-from mindsdb_sdk.utils.openai import make_data_tool
+from mindsdb_sdk.utils.mind import create
 from openai import OpenAI
 import json
 import logging
@@ -15,6 +15,10 @@ load_dotenv()
 
 # Get the MindsDB API Key from the environment variables
 mindsdb_api_key = os.getenv('MINDSDB_API_KEY')
+
+#define base url
+base_url = "https://ai.dev.mindsdb.com/"
+#base_url="https://llm.mdb.ai"
 
 #Get database connections details from environment variables
 database_user = os.getenv('DATABASE_USER')
@@ -40,11 +44,11 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 # Create an instance of the OpenAI client with the MindsDB API Key and endpoint
 client = OpenAI(
    api_key=mindsdb_api_key,
-   base_url="https://ai.dev.mindsdb.com/"
-#    base_url="https://llm.mdb.ai"  # Set MindsDB inference endpoint as the base URL
+   base_url=base_url
 )
 
-# Connect example DB to MindsDB.
+# Mind arguments
+model = 'gpt-4'  # This is the model used by MindsDB text to SQL, and is not limited by what our inference endpoints support.
 connection_args = {
     'user': database_user,
     'password': database_password,
@@ -53,13 +57,21 @@ connection_args = {
     'database': database_database,
     'schema': database_schema
 }
+data_source = 'postgres'
+description = 'House Sales'
 
-postgres_tool = make_data_tool(
-    'gpt-4', # This is the model used by MindsDB text to SQL, and is not limited by what our inference endpoints support.
-    'postgres',
-    'House sales',
-    connection_args
+# Create a mind
+mind = create(
+    base_url=base_url,
+    api_key=mindsdb_api_key,
+    model=model,
+    connection_args=connection_args,
+    data_source=data_source,
+    description=description
 )
+print("Mind successfully created: ") 
+print(mind.name)  # Each name for a mind has to be unique among all users because of the internal MindsDB implementation.
+mind_name = mind.name
 
 # Define the route for the home page
 @app.route('/')
@@ -75,20 +87,18 @@ def llm():
 @app.route('/send', methods=['POST'])
 def send():
     message = request.form['message']  # Get the message from the form
-    model = request.form.get('model') or "gpt-3.5-turbo"  # Default to "gpt-3.5-turbo" if no model is provided
-    print("Completing request using model: "+model)
     res = [] 
     try:
         # Create the message object
         new_message = {"role": "user", "content": message}
         # Send the message to the API and get the response
         response = client.chat.completions.create(
-            model=model,   # This model is limited by what our inference endpoints support (only gpt-3.5-turbo for now).
+            # The model provided must be the name of the mind.
+            model=mind_name,
             messages=[new_message],
-            tools=[postgres_tool],
-            tool_choice='required',
             stream=False
         )
+
         print("Got response:")
         print(response)
         if not response.choices[0].message.content:
@@ -187,5 +197,5 @@ def models():
 
 # Run the Flask application
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
     print("App Running on 127.0.0.0:8000")
+    app.run(port=8000, debug=False)
