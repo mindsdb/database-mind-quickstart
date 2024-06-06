@@ -1,4 +1,7 @@
-# Text2SQL DEMO
+# Database Mind DEMO
+
+This project is a demo designed to help developers get started with building applications that utilize large language models (LLMs) and data from a database. Feel free to take this code, clone it, and make it your own. We can't wait to see the amazing applications you build!
+
 ## Installation:
 To run this project, you'll need Python 3 installed on your system. 
 
