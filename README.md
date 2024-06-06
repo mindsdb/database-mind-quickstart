@@ -41,3 +41,8 @@ DATABASE_SCHEMA=database_schema
 ## Running:
 To run the project, execute the following command: 
 ``` python3 app.py ```
+
+## Usage:
+In your browser go to 
+``` http://localhost:8000/ ```
+
