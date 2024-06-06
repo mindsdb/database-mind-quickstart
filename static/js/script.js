@@ -288,13 +288,13 @@ function simulateLoadingPhase() {
   }, 800);
   // Only display loading messages if not on the completion page.
   if (!IS_LLM) {
-    let randomTime = Math.floor(Math.random() * (13 - 5 + 1)) + 5;
+    let randomTime = Math.floor(Math.random() * (15 - 8 + 1)) + 5;
     loadingTimeout1 = setTimeout(() => {
       const message = getRandomLoadingMessage(queriesMessages);
       createLogMessage(message);
       scroll();
     }, randomTime * 1000);
-    randomTime = randomTime + Math.floor(Math.random() * (13 - 5 + 1)) + 5;
+    randomTime = randomTime + Math.floor(Math.random() * (15 - 8 + 1)) + 5;
     loadingTimeout2 = setTimeout(() => {
       const message = getRandomLoadingMessage(executionMessages);
       createLogMessage(message);
