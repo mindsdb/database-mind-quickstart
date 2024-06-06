@@ -1,14 +1,14 @@
-const IS_LLM = window.location.href.includes('/llm');
+const IS_LLM = window.location.href.includes("/llm");
 let history = [];
-if(IS_LLM){
-  history = localStorage.getItem('history');
-  try{
-    history = JSON.parse(history)
-    if(!history){
-      history = []
+if (IS_LLM) {
+  history = localStorage.getItem("history");
+  try {
+    history = JSON.parse(history);
+    if (!history) {
+      history = [];
     }
-  }catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
     history = [];
   }
   renderStoredConversation(history);
@@ -62,15 +62,15 @@ function createMessageDiv(message, role, data) {
     addLoadingIndicator(p);
     messageDiv.classList.add("temp"); // Add a temporary class for easy removal.
   }
-  if(role ==='assistant' && data['usage']){
+  if (role === "assistant" && data["usage"] && data["usage"]["total_tokens"] && data["usage"]["total_tokens"] !== 0) {
     const container = document.createElement("div");
     container.appendChild(messageDiv);
     const infoDiv = document.createElement("div");
     infoDiv.className = "request_stats";
-    let html = `Model: <span id="model">${data['model']}</span> | Prompt: <span id="prompt_tokens">${data['usage']['prompt_tokens']}</span> | Completion: <span id="completion_tokens">${data['usage']['completion_tokens']}</span> | Total: <span id="total_tokens">${data['usage']['total_tokens']}</span>`;
+    let html = `Model: <span id="model">${data["model"]}</span> | Prompt: <span id="prompt_tokens">${data["usage"]["prompt_tokens"]}</span> | Completion: <span id="completion_tokens">${data["usage"]["completion_tokens"]}</span> | Total: <span id="total_tokens">${data["usage"]["total_tokens"]}</span>`;
     infoDiv.innerHTML = html;
     container.appendChild(infoDiv);
-    return container
+    return container;
   }
 
   return messageDiv;
@@ -125,7 +125,6 @@ function loading(message) {
 
   // Simulate the loading phase with a delay and loading messages.
   simulateLoadingPhase();
-
 }
 
 /**
@@ -138,10 +137,10 @@ function resetInput() {
   enableSendButton();
 }
 
-function renderStoredConversation(history){
-  if(history && history.length>0){
+function renderStoredConversation(history) {
+  if (history && history.length > 0) {
     for (let i = 0; i < history.length; i++) {
-      renderLastMessages([history[i]])
+      renderLastMessages([history[i]]);
     }
   }
 }
@@ -289,13 +288,13 @@ function simulateLoadingPhase() {
   }, 800);
   // Only display loading messages if not on the completion page.
   if (!IS_LLM) {
-    let randomTime = Math.floor(Math.random() * (13 - 5 + 1)) + 5; 
+    let randomTime = Math.floor(Math.random() * (13 - 5 + 1)) + 5;
     loadingTimeout1 = setTimeout(() => {
       const message = getRandomLoadingMessage(queriesMessages);
       createLogMessage(message);
       scroll();
     }, randomTime * 1000);
-    randomTime = randomTime + Math.floor(Math.random() * (13 - 5 + 1)) + 5; 
+    randomTime = randomTime + Math.floor(Math.random() * (13 - 5 + 1)) + 5;
     loadingTimeout2 = setTimeout(() => {
       const message = getRandomLoadingMessage(executionMessages);
       createLogMessage(message);
@@ -311,31 +310,38 @@ function simulateLoadingPhase() {
 function postMessageToServer(message) {
   const formData = new FormData();
   formData.append("message", message);
-  let endpoint = '/send';
+  let endpoint = "/send";
 
   if (IS_LLM) {
     let model = document.getElementById("model_select").value;
     formData.append("model", model);
-    endpoint = '/send_llm';
-    history.push({"role": "user", "content": message});
-    localStorage.setItem('history',JSON.stringify(history));
+    endpoint = "/send_llm";
+    history.push({ role: "user", content: message });
+    localStorage.setItem("history", JSON.stringify(history));
     formData.append("history", JSON.stringify(history));
   }
 
   fetch(endpoint, { method: "POST", body: formData })
     .then((response) => response.json())
     .then((data) => {
-      if(data[0] && 'role' in data[0] && data[0]['role']!='error'){
-        history.push({"role": "assistant", "content": data[0]['content'], "model": data[0]['model'], "usage": data[0]['usage']});
-        localStorage.setItem('history',JSON.stringify(history));
+      if (data[0] && "role" in data[0] && data[0]["role"] != "error") {
+        history.push({
+          role: "assistant",
+          content: data[0]["content"],
+          model: data[0]["model"],
+          usage: data[0]["usage"],
+        });
+        if (IS_LLM) {
+          localStorage.setItem("history", JSON.stringify(history));
+        }
       }
       resetInput();
       removeElementsByClass("temp");
       renderLastMessages(data);
-      console.log('========')
-      console.log("Content: ", data[0]['content']);
-      console.log("Model: ", data[0]['model']);
-      console.log("Usage: ", data[0]['usage']);
+      console.log("========");
+      console.log("Content: ", data[0]["content"]);
+      console.log("Model: ", data[0]["model"]);
+      console.log("Usage: ", data[0]["usage"]);
       document.getElementById("query").focus();
     })
     .catch((error) => {
@@ -367,17 +373,18 @@ function getModels() {
     });
 }
 
-function resetConversation(){
-  let text = "Are you sure you want to restart the conversation? All messages and context will be lost.";
+function resetConversation() {
+  let text =
+    "Are you sure you want to restart the conversation? All messages and context will be lost.";
   if (confirm(text) == true) {
     history = [];
-    localStorage.setItem('history',JSON.stringify(history));
+    localStorage.setItem("history", JSON.stringify(history));
     const div = document.createElement("div");
     div.className = "new_session";
     div.innerHTML = `<div class="line"></div>New session started<div class="line"></div>`;
-    document.getElementById("chat_container").innerHTML = '';
+    document.getElementById("chat_container").innerHTML = "";
     document.getElementById("chat_container").appendChild(div);
-  } 
+  }
 }
 
 /**
