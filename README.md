@@ -7,9 +7,9 @@ To run this project, you'll need Python 3 installed on your system.
 
 Clone this repository to your local machine using: 
 
-``` git clone git@github.com:mindsdb/mdb-text2sql-example.git ```
+``` git clone git@github.com:mindsdb/database-mind-quickstart.git ```
 
-``` cd mdb-text2sql-example/ ```
+``` cd database-mind-quickstart/ ```
 
 Create a virtual environment, execute the following command: 
 
