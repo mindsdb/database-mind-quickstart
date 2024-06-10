@@ -1,6 +1,5 @@
-# Database Mind DEMO
-
-This project is a demo designed to help developers get started with building applications that utilize large language models (LLMs) and data from a database. Feel free to take this code, clone it, and make it your own. We can't wait to see the amazing applications you build!
+# Database-Mind Quickstart
+Get started with the Minds Endpoint api’s. Minds Endpoint is designed to helps AI agents accomplish tasks, accelerating development by connecting any Mind or LLM to your data source with minimal code. In this example a Database Mind is a preconfigured AI system designed to simplify data access and answer questions in plain English directly from a PostgreSQL-compatible database. It supports popular databases such as: MySQL, PostgreSQL, Snowflake, Google BigQuery, MariaDB, and ClickHouse. Learn more in [documentation](https://docs.mdb.ai/docs/minds)
 
 ## Installation:
 To run this project, you'll need Python 3 installed on your system. 
