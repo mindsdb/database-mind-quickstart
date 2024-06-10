@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for
-from mindsdb_sdk.utils.mind import create
+from mindsdb_sdk.utils.mind import create_mind
 from openai import OpenAI
 import json
 import logging
@@ -58,19 +58,19 @@ connection_args = {
 }
 data_source = 'postgres'
 description = 'House Sales'
-
+mind_name = 'my_house_data_mind'
+print("Creating mind, please wait...")
 # Create a mind
-mind = create(
+mind = create_mind(
+    name = mind_name,
     base_url=base_url,
     api_key=mindsdb_api_key,
     model=model,
-    connection_args=connection_args,
-    data_source=data_source,
+    data_source_connection_args=connection_args,
+    data_source_type=data_source,
     description=description
 )
-print("Mind successfully created: ") 
-print(mind.name)  # Each name for a mind has to be unique among all users because of the internal MindsDB implementation.
-mind_name = mind.name
+print(f"Mind successfully created: {mind_name}")
 
 # Define the route for the home page
 @app.route('/')
