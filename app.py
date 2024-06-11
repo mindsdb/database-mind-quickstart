@@ -61,7 +61,6 @@ connection_args = {
 data_source = 'postgres'
 description = 'House Sales'
 mind_name = 'my_house_data_mind_'+ts
-print(mind_name)
 print("Creating mind, please wait...")
 # Create a mind
 mind = create_mind(
