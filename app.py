@@ -5,10 +5,12 @@ from mindsdb_sdk.utils.mind import create_mind
 from openai import OpenAI
 import json
 import logging
+import time
 
 # Configure logging to ignore Werkzeug's default logging messages
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
+ts = str(int(time.time()))
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -58,7 +60,8 @@ connection_args = {
 }
 data_source = 'postgres'
 description = 'House Sales'
-mind_name = 'my_house_data_mind'
+mind_name = 'my_house_data_mind_'+ts
+print(mind_name)
 print("Creating mind, please wait...")
 # Create a mind
 mind = create_mind(
@@ -196,6 +199,6 @@ def models():
 
 # Run the Flask application
 if __name__ == '__main__':
-    print("App Running on 127.0.0.0:8000")
+    print("App Running on 127.0.0.1:8000")
     app.run(port=8000, debug=False)
 
