@@ -20,6 +20,8 @@ mindsdb_api_key = os.getenv('MINDSDB_API_KEY')
 
 #define base url
 base_url = os.getenv('MINDSDB_API_URL', "https://llm.mdb.ai")
+if base_url.endswith("/"):
+    base_url = base_url[:-1]
 
 #Get database connections details from environment variables
 database_user = os.getenv('DATABASE_USER')
