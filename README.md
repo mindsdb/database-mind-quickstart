@@ -1,5 +1,5 @@
 # Database-Mind Quickstart
-Get started with the Minds Endpoint api’s. Minds Endpoint is designed to help AI agents accomplish tasks, accelerating development by connecting any Mind or LLM to your data source with minimal code. In this example a Database Mind is a preconfigured AI system designed to simplify data access and answer questions in plain English directly from a PostgreSQL-compatible database. It supports popular databases such as: MySQL, PostgreSQL, Snowflake, Google BigQuery, MariaDB, and ClickHouse. Learn more in [documentation](https://docs.mdb.ai/docs/minds)
+Get started with the Minds Endpoint api’s. Minds Endpoint is designed to help AI agents accomplish tasks, accelerating development by connecting any Mind or LLM to your data source with minimal code. In this example, a Database Mind is a preconfigured AI system designed to simplify data access and answer questions in plain English directly from a PostgreSQL-compatible database. It supports popular databases such as: MySQL, PostgreSQL, Snowflake, Google BigQuery, MariaDB, and ClickHouse. Learn more in [documentation](https://docs.mdb.ai/docs/minds)
 
 ## Installation:
 To run this project, you'll need Python 3 installed on your system. 
@@ -26,7 +26,7 @@ Install dependencies using pip:
 
 Go to https://mdb.ai/ register and login for generating a MindsDB API key.
 
-Create and .env file and add your MindsDB API KEY:
+Create an .env file and add your MindsDB API KEY:
 
 ``` MINDSDB_API_KEY=your_api_key ```
 
