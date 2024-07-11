@@ -19,7 +19,7 @@ load_dotenv()
 mindsdb_api_key = os.getenv('MINDSDB_API_KEY')
 
 #define base url
-base_url = os.getenv('MINDSDB_API_URL', "https://llm.mdb.ai")
+base_url = os.getenv('MINDSDB_API_URL', "https://ai.staging.mindsdb.com")
 if base_url.endswith("/"):
     base_url = base_url[:-1]
 

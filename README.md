@@ -34,12 +34,24 @@ Create an .env file and add your MindsDB API KEY:
 
 Add your database credentials to the .env file:
 
-``` DATABASE_USER=database_user
+``` 
+DATABASE_USER=database_user
 DATABASE_PASSWORD=database_password
 DATABASE_HOST=database_host
 DATABASE_PORT=database_port
 DATABASE_DATABASE=database_name
 DATABASE_SCHEMA=database_schema
+```
+
+(Optional) If you don't have your own database, you can use our sample database by using these values in your `.env` file:
+
+```
+DATABASE_USER=demo_user
+DATABASE_PASSWORD=demo_password
+DATABASE_HOST=samples.mindsdb.com
+DATABASE_PORT=5432
+DATABASE_DATABASE=demo
+DATABASE_SCHEMA=demo_data
 ```
 
 ## Running:
@@ -50,3 +62,4 @@ To run the project, execute the following command:
 In your browser go to 
 ``` http://localhost:8000/ ```
 
+If you connected to our sample database you can ask questions about the different tables we provide. You can see a small preview of the tables [here](https://docs.mdb.ai/docs/sample-database#sample-data-tables)
