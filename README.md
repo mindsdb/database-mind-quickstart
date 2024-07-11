@@ -63,3 +63,5 @@ In your browser go to
 ``` http://localhost:8000/ ```
 
 If you connected to our sample database you can ask questions about the different tables we provide. You can see a small preview of the tables [here](https://docs.mdb.ai/docs/sample-database#sample-data-tables)
+
+![alt text](image-1.png)
